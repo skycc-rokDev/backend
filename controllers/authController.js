@@ -3,6 +3,7 @@ const jwt = require('../modules/jwt');
 const MSG = require('../modules/responseMessage');
 const CODE = require('../modules/statusCode');
 const db = require('../modules/db');
+const bcrypt = require('bcrypt');
 const hashing = require('../modules/hash');
 
 exports.register = async (req, res, next) => {
@@ -23,7 +24,8 @@ exports.register = async (req, res, next) => {
 
 	// add email and password to database
 	hashing(password).then(async (hash) => {
-		const stmt = db.prepare('INSERT INTO user_auth (email, password) VALUES (?, ?)').run(email, hash);
+		db.serialize();
+		const stmt = db.prepare('INSERT INTO user_auth (email, password) VALUES (?, ?);').run(email, hash);
 		if (!stmt) {
 			res.status(500).send({'status': CODE.BAD_REQUEST, 'message': MSG.ALREADY_EXIST_EMAIL});
 			return;
@@ -49,7 +51,8 @@ exports.login = async (req, res, next) => {
 	}
 
 	// check if email exists in database
-	const stmt = db.prepare('SELECT * FROM user_auth WHERE email = ?').get(email);
+	db.serialize();
+	const stmt = db.prepare('SELECT * FROM user_auth WHERE email = ?;').get(email);
 	if (!stmt || typeof stmt != 'object') {
 		return res.status(400).send({'status': CODE.BAD_REQUEST, 'message': MSG.INVALID_EMAIL});
 	}

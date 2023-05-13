@@ -6,11 +6,14 @@ const TOKEN_EXPIRED = -3;
 const TOKEN_INVALID = -2;
 
 const authUtil = {
-	checkToken: async (req, res, next) => {
+	checkToken : (async (req, res, next) => {
         var token = req.headers.token;
         // 토큰 없음
         if (!token)
+		{
+			req.email = undefined;
 			next();
+		}
         // decode
         const user = await jwt.verify(token);
         // 유효기간 만료
@@ -22,8 +25,8 @@ const authUtil = {
         if (user.email === undefined)
             return res.send({"code": CODE.UNAUTHORIZED, "message": MSG.INVALID_TOKEN});
         req.email = user.email;
-        next();
-    }
+		return await next();
+    })
 }
 
 module.exports = authUtil;
