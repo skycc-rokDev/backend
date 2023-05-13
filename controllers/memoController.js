@@ -33,7 +33,7 @@ exports.getMemo = async (req, res, next) => {
 	db.serialize();
 	const stmt = db.prepare('SELECT * FROM memo WHERE email=? AND cardId=?;').get(email, cardId);
 	if (!stmt) {
-		res.status(CODE.OK).send({'status': CODE.OK, 'message': {
+		res.status(CODE.OK).send({'status': CODE.OK, 'message': MSG.GET_MEMO_SUCCESS, 'data': {
 			"email": email,
 			"cardId": cardId,
 			"memo": ""
