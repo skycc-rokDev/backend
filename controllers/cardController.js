@@ -13,17 +13,16 @@ exports.addCard = async (req, res, next) => {
 	const site = req.body.site;
 	const role = req.body.role;
 	const email2 = req.body.email2; // card email
-	const memo = req.body.memo? req.body.memo : " ";
 	const cardId = crypto.randomUUID();
 
-	if (!email || !name || !company || !phone || !address || !site || !role || !email2 || !memo) {
+	if (!email || !name || !company || !phone || !address || !site || !role || !email2) {
 		res.status(CODE.BAD_REQUEST).send({'status': CODE.BAD_REQUEST, 'message': MSG.MISSING_PARAMETERS});
 		return;
 	}
 
 	db.serialize();
-	const stmt = db.prepare('INSERT INTO card (email, name, company, phone, address, site, role, email2, uuid, memo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);')
-		.run(email, name, company, phone, address, site, role, email2, cardId, memo);
+	const stmt = db.prepare('INSERT INTO card (email, name, company, phone, address, site, role, email2, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);')
+		.run(email, name, company, phone, address, site, role, email2, cardId);
 	if (!stmt) {
 		res.status(CODE.BAD_REQUEST).send({'status': CODE.BAD_REQUEST, 'message': MSG.ADD_CARD_FAIL});
 		return;
@@ -66,15 +65,14 @@ exports.MyCard = async (req, res, next) => {
 
 exports.deleteCard = async (req, res, next) => {
 	const email = req.email;
-	const uuid = req.body.uuid;
 	
-	if (!email || !uuid) {
+	if (!email) {
 		res.status(CODE.BAD_REQUEST).send({'status': CODE.BAD_REQUEST, 'message': MSG.MISSING_PARAMETERS});
 		return;
 	}
 
 	db.serialize();
-	const stmt = db.prepare('DELETE FROM card WHERE email = ? AND uuid = ?;').run(email, uuid);
+	const stmt = db.prepare('DELETE FROM card WHERE email = ?;').run(email);
 	if (!stmt) {
 		res.status(CODE.BAD_REQUEST).send({'status': CODE.BAD_REQUEST, 'message': MSG.DELETE_CARD_FAIL});
 		return;

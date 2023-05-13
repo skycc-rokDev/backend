@@ -15,4 +15,8 @@ module.exports = {
 	DELETE_CARD_SUCCESS: 'delete card success',
 	ADD_RELATION_FAIL: 'add relation failed',
 	ADD_RELATION_SUCCESS: 'add relation success',
+	ADD_MEMO_FAIL: 'add memo failed',
+	ADD_MEMO_SUCCESS: 'add memo success',
+	GET_MEMO_FAIL: 'get memo failed',
+	GET_MEMO_SUCCESS: 'get memo success',
 }

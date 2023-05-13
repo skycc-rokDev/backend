@@ -12,10 +12,12 @@ app.use(express.urlencoded({ extended: true }));
 const authRouter = require('./routes/auth');
 const cardRouter = require('./routes/card');
 const relationRouter = require('./routes/relation');
+const memoRouter = require('./routes/memo');
 
 app.use('/auth', authRouter);
 app.use('/card', authMiddleware, cardRouter);
 app.use('/relation', authMiddleware, relationRouter);
+app.use('/memo', authMiddleware, memoRouter);
 
 app.listen (3000, () => {
 	console.log('server is running on port 3000');
